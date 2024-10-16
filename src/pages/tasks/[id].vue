@@ -6,7 +6,7 @@ const route = useRoute()
 
 <template>
   <div>
-    <h1>Project: {{ route.params?.id }}</h1>
+    <h1>Task: {{ 'id' in route.params ? route.params.id : undefined }}</h1>
   </div>
 </template>
 

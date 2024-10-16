@@ -9,7 +9,16 @@ import VueRouter from 'unplugin-vue-router/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [VueRouter(), vue()],
+  plugins: [
+    VueRouter(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: tag => tag.startsWith('iconify-icon'),
+        },
+      },
+    }),
+  ],
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()],

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { supabase } from '@/lib/supabaseClient'
-import { ref } from 'vue'
+import { ref, h } from 'vue'
 import type { Tables } from '../../../database/types'
+import type { ColumnDef } from '@tanstack/vue-table'
+import DataTable from '@/components/ui/data-table/DataTable.vue'
+import { RouterLink } from 'vue-router'
 
 const tasks = ref<Tables<'tasks'>[] | null>(null)
 
@@ -12,16 +15,65 @@ const tasks = ref<Tables<'tasks'>[] | null>(null)
 
   tasks.value = data
 })()
+
+const columns: ColumnDef<Tables<'tasks'>>[] = [
+  {
+    accessorKey: 'name',
+    header: () => h('div', { class: 'text-start' }, 'Name'),
+    cell: ({ row }) =>
+      h(
+        RouterLink,
+        { to: `/tasks/${row.original.id}`, class: 'text-start font-medium hover:underline block' },
+        () => row.getValue('name'),
+      ),
+  },
+  {
+    accessorKey: 'status',
+    header: () => h('div', { class: 'text-start' }, 'Status'),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-start font-medium' },
+        row.getValue('status'),
+      )
+    },
+  },
+  {
+    accessorKey: 'due_date',
+    header: () => h('div', { class: 'text-start' }, 'Due Date'),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-start font-medium' },
+        row.getValue('due_date'),
+      )
+    },
+  },
+  {
+    accessorKey: 'project_id',
+    header: () => h('div', { class: 'text-start' }, 'Project'),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-start font-medium' },
+        row.getValue('project_id'),
+      )
+    },
+  },
+  {
+    accessorKey: 'collaborators',
+    header: () => h('div', { class: 'text-start' }, 'Collaborators'),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-start font-medium' },
+        JSON.stringify(row.getValue('collaborators')),
+      )
+    },
+  },
+]
 </script>
 
 <template>
-  <div>
-    <h1>Tasks Page</h1>
-    <RouterLink to="/">Go to home</RouterLink>
-    <ul>
-      <li v-for="task in tasks" :key="task.id">
-        {{ task.name }}
-      </li>
-    </ul>
-  </div>
+  <DataTable v-if="tasks" :columns="columns" :data="tasks" />
 </template>
